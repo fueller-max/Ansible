@@ -1,0 +1,7 @@
+# Firewall setup to filter incoming traffic 
+
+- name: Install postgres 18 on db1 and db2
+  hosts: firewall
+  become: yes 
+  roles: 
+     - iptables_fwd

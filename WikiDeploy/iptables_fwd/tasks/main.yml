@@ -1,0 +1,25 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for iptables_fwd
+
+- name: Install iptables-persistent
+  apt:
+    name: iptables-persistent
+    state: present
+
+- name: Copy ipv4 rules
+  template:
+    src: rules.v4  
+    dest: /etc/iptables/rules.ipv4
+    owner: root
+    group: root 
+    mode: '0644' 
+ 
+- name: restore firewall rules
+  shell: sudo iptables-restore < /etc/iptables/rules.v4
+
+- name: Setup package forwarding
+  sysctl:
+      name: net.ipv4.ip_forward
+      value: '1'
+      state: present

@@ -1,0 +1,11 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for iptables_fwd
+
+EXT_PORT_HTTP: '80'
+EXT_PORT_HTTPS: '443'
+
+INT_PORT_HTTP: '80'
+INT_PORT_HTTPS: '443'
+
+DNAT_IP: '172.21.20.11'  # Check!!
