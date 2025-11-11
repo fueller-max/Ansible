@@ -1,0 +1,12 @@
+# Wikijs infrastructure setup 
+
+- name: Install Wikij on backend server
+  hosts: backend2
+  become: yes
+  roles: 
+    - install_wikijs
+     
+
+
+
+     

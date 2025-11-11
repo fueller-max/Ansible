@@ -1,0 +1,5 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for prepare_db
+wiki_db_user: wikijs
+wiki_usr_pass: wikijsrocks

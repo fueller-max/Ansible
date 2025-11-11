@@ -1,0 +1,12 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for install_wikijs
+
+db_ip: '172.21.40.10'
+db_user: 'wikijs'
+db_pass: 'wikijsrocks'
+db: 'wiki'
+
+
+backend1_listen_ip: '172.21.30.10'
+backend2_listen_ip: '172.21.30.11'

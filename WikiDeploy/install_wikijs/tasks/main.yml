@@ -1,0 +1,65 @@
+#SPDX-License-Identifier: MIT-0
+
+# tasks file for install_wikijs
+
+- name: Create a directory for Wiki in /var/wiki 
+  ansible.builtin.file:
+    path: /var/wiki
+    state: directory
+    mode: '0755'
+    owner: user
+    group: user
+
+- name: Download the latest version of Wiki.js to the directory
+  ansible.builtin.command: wget https://github.com/Requarks/wiki/releases/latest/download/wiki-js.tar.gz
+  args:
+    chdir: /var/wiki
+
+- name: Extract the package to the final destination
+  ansible.builtin.command: tar xzf wiki-js.tar.gz
+  args:
+    chdir: /var/wiki 
+
+- name: Delete wiki-js.tar.gz
+  ansible.builtin.file:
+     path: /var/wiki/wiki-js.tar.gz
+     state: absent 
+
+- name: Copy config.yaml  
+  template: 
+    src: config.yml.j2 
+    dest: /var/wiki/config.yml 
+
+- name: Delete config.sample.yml
+  ansible.builtin.file:
+     path: /var/wiki/config.sample.yml
+     state: absent 
+
+- name: install Node.js
+  ansible.builtin.apt:
+      name:
+        - nodejs
+      state: present 
+
+- name: Set permissions on a /var
+  ansible.builtin.file:
+    path: /var
+    mode: '0777'   
+
+- name: Copy wiki.service to /etc/systemd/system
+  ansible.builtin.copy:
+    src: wiki.service  
+    dest: /etc/systemd/system
+    owner: user
+    group: user 
+    mode: '0644' 
+
+- name: Reload systemd
+  ansible.builtin.command: systemctl daemon-reload
+
+- name: Ensure Wikij is started and enabled
+  ansible.builtin.service:
+    name: wiki 
+    state: started
+    enabled: true  
+

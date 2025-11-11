@@ -1,0 +1,25 @@
+---
+- name: Render template locally
+  hosts: router1
+  become: true
+  vars_files:
+   - router_vars.yaml
+  tasks:
+    #- name: Create a temporary directory for local rendering
+      #ansible.builtin.tempfile:
+      #  state: directory
+      #delegate_to: localhost
+      #register: temp_dir
+
+    # - name: Print the variable
+    #   ansible.builtin.debug:
+    #     msg: "{{ router_networks[router1] }}"
+
+     - name: Render the template into the temporary directory
+       template:
+         src: "{{ playbook_dir }}/templates/frr.conf.j2"  # Path to your Jinja2 template
+         dest: /etc/frr/frr.conf
+         owner: frr
+         group: frr
+         mode: 0640
+

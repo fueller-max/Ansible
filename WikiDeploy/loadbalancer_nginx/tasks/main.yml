@@ -1,0 +1,29 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for loadbalancer_angie
+
+- name: Update apt cache
+  ansible.builtin.apt:
+      update_cache: yes
+      cache_valid_time: 3600
+
+- name: Install Nginx
+  ansible.builtin.apt:
+      name:
+        - nginx
+      state: present 
+
+- name: Copy postgresql.conf to db2
+  template: 
+    src: nginx.conf.j2 
+    dest: /etc/nginx/nginx.conf 
+    owner: root
+    group: root 
+    mode: '0644' 
+   
+
+- name: Ensure Nginx service is running and enabled
+  ansible.builtin.service:
+      name: nginx
+      state: started
+      enabled: yes          

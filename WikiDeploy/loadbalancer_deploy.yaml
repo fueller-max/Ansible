@@ -1,0 +1,5 @@
+- name: Install Angie and setup as a load balancer
+  hosts: loadbalancer
+  become: yes
+  roles: 
+    - loadbalancer_nginx

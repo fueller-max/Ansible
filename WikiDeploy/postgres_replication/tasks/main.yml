@@ -1,0 +1,118 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for postgres_replication
+- name: install Python tools 
+  apt: 
+    name: 
+     - python3-pip
+     - python3-dev
+     - libpq-dev  
+    state: present 
+    update_cache: true
+  
+# Setup of node1 (Master)
+
+- name: Copy postgresql.conf to db1
+  template: 
+    src: postgresql.conf.j2 
+    dest: /etc/postgresql/18/main/postgresql.conf 
+    owner: postgres
+    group: postgres 
+    mode: '0600' 
+  when: (ansible_hostname == "db1")
+
+- name: copy pg_hba.conf to db1 
+  template: 
+    src: pg_hba.conf.j2 
+    dest: /etc/postgresql/18/main/pg_hba.conf 
+    owner: postgres 
+    group: postgres 
+    mode: '0600' 
+  when: (ansible_hostname == "db1")
+
+- name: Restart postgresql-server on db1
+  service: 
+    name: postgresql 
+    state: restarted 
+  when: (ansible_hostname == "db1") 
+
+- name: Install acl package
+  apt:
+     name: acl
+     state: present
+     update_cache: yes    
+  when: (ansible_hostname == "db1")
+
+- name: Install psycopg2 (needed for the next step)
+  apt:
+     name: python3-psycopg2
+     state: present  
+  when: (ansible_hostname == "db1")
+  
+- name: Create PostgreSQL user replicator on db1 (master) 
+  become: true
+  become_user: postgres
+  postgresql_user: 
+    name: replicator 
+    password: '{{ replicator_password }}' 
+    role_attr_flags: REPLICATION 
+  when: (ansible_hostname == "db1")
+
+# --- End of master-node setup           ----
+
+
+# --- Setup of node2  (Slave)            ----
+
+- name: Stop postgresql-server on db2 
+  service: 
+     name: postgresql 
+     state: stopped 
+  when: (ansible_hostname == "db2")
+
+- name: Remove files from data catalog 
+  file: 
+    path: /var/lib/postgresql/18/main/ 
+    state: absent 
+  when: (ansible_hostname == "db2")
+
+- name: Copy files from master to slave 
+  expect: 
+    command: 'pg_basebackup -h {{ master_ip_repl }} -U replicator -p 5432 -D /var/lib/postgresql/18/main/ -R -P' 
+    responses: 
+      Password: "{{ replicator_password }}" 
+  when: (ansible_hostname == "db2")
+
+- name: Recursively set ownership of /var/lib/postgresql/18/main/
+  ansible.builtin.file:
+        path: /var/lib/postgresql/18/main/
+        state: directory
+        recurse: yes
+        owner: postgres
+        group: postgres  
+  when: (ansible_hostname == "db2")      
+
+- name: Copy postgresql.conf to db2
+  template: 
+    src: postgresql.conf.j2 
+    dest: /etc/postgresql/18/main/postgresql.conf 
+    owner: postgres
+    group: postgres 
+    mode: '0600' 
+  when: (ansible_hostname == "db2")
+
+- name: copy pg_hba.conf to db2 
+  template: 
+    src: pg_hba.conf.j2 
+    dest: /etc/postgresql/18/main/pg_hba.conf 
+    owner: postgres 
+    group: postgres 
+    mode: '0600' 
+  when: (ansible_hostname == "db2")
+
+- name: Start postgresql-server on db2 
+  service: 
+    name: postgresql 
+    state: started 
+  when: (ansible_hostname == "db2")  
+
+# --- end of slave-node  setup           ----
