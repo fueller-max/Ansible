@@ -9,14 +9,14 @@
 
 - name: Copy ipv4 rules
   template:
-    src: rules.v4  
+    src: rules.v4.j2  
     dest: /etc/iptables/rules.ipv4
     owner: root
     group: root 
     mode: '0644' 
  
 - name: restore firewall rules
-  shell: sudo iptables-restore < /etc/iptables/rules.v4
+  shell: sudo iptables-restore < /etc/iptables/rules.ipv4
 
 - name: Setup package forwarding
   sysctl:
