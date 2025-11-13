@@ -2,4 +2,5 @@
   hosts: loadbalancer
   become: yes
   roles: 
+    #- install_nginx
     - loadbalancer_nginx

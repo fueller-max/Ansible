@@ -2,5 +2,5 @@
 ---
 # defaults file for loadbalancer_angie
 
-backend1_listen_ip: '172.21.30.10'
-backend2_listen_ip: '172.21.30.11'
+backend1_listen_ip: '172.21.30.10:3000'
+backend2_listen_ip: '172.21.30.11:3000'
