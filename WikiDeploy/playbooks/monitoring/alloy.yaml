@@ -1,0 +1,24 @@
+---
+- name: Deploy alloy
+  hosts: loadbalancer
+  become: true
+  roles:
+    - role: grafana.grafana.alloy
+  vars:
+    alloy_config: |
+        local.file_match "local_files" {
+           path_targets = [
+           {"__path__" = "/var/log/*.log"},
+           {"__path__" = "/var/log/nginx/*.log"}]
+           sync_period = "5s" 
+        }
+        loki.source.file "log_scrape" {
+           targets    = local.file_match.local_files.targets
+           forward_to = [loki.write.loki_instance.receiver]
+        }
+
+        loki.write "loki_instance" {
+           endpoint {
+              url = "http://192.168.108.17:3100/loki/api/v1/push" // Replace with your Loki endpoint
+           }
+        }

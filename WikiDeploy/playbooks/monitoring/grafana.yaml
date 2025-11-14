@@ -1,0 +1,9 @@
+- name: Manage Grafana service
+  hosts: loki
+  roles:
+    - role: grafana.grafana.grafana
+      vars:
+        grafana_ini:
+          security:
+            admin_user: admin
+            admin_password: grafana

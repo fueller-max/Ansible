@@ -27,7 +27,7 @@
 
 
 - name: Put Node cfg for Prometheus 
-  hosts: monitoring
+  hosts: monitoring, db1
   become: yes
   roles:
       - monitoring_cfg

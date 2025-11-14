@@ -1,6 +1,6 @@
 ---
 - name: Set hostname on target machines
-  hosts: monitor
+  hosts: loki
   become: yes 
   tasks:
 
