@@ -70,6 +70,22 @@ http {
     
 	}
     
+	# Data for monitoring (Promtheus node exporter)
+
+	server {
+      listen localhost;
+
+	   allow 127.0.0.1;
+       deny all;
+       access_log off;
+
+      location /stub_status {
+        stub_status;
+         
+      }
+
+	}
+    
 	server {
 
       listen 8080;
@@ -81,6 +97,30 @@ http {
           
           proxy_pass http://wiki_servers;
       }
+   }
+
+   server {
+    
+	  listen 443;
+	  
+	  # SSL certificate and key paths
+      ssl_certificate /etc/nginx/ssl/selfsigned.crt;
+      ssl_certificate_key /etc/nginx/ssl/selfsigned.key;
+
+	  # Recommended SSL/TLS settings for security and performance
+      ssl_protocols TLSv1.2 TLSv1.3; # Specify supported TLS versions
+      ssl_ciphers 'TLS_AES_256_GCM_SHA384:TLS_CHACHA20_POLY1305_SHA256:TLS_AES_128_GCM_SHA256:EECDH+AESGCM:EDH+AESGCM'; # Strong cipher suites
+      ssl_prefer_server_ciphers on; # Server prefers its own cipher order
+      ssl_session_cache shared:SSL:10m; # Shared SSL session cache
+      ssl_session_timeout 1h; # SSL session timeout
+      ssl_stapling on; # Enable OCSP stapling
+
+	  location / {
+          include proxy_params;
+
+          proxy_pass http://wiki_servers;
+      }
+
    }
 
 }

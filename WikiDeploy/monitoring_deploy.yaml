@@ -1,0 +1,34 @@
+ # Monitoring infrastructure setup 
+
+
+# - name: Install Prometheus for Monitoring Server
+#   hosts: monitoring
+#   collections:
+#           - prometheus.prometheus
+#   roles:
+#           - prometheus   
+
+# - name: Install NodeExporter for LoadBalancer
+#   hosts: loadbalancer
+#   collections:
+#           - prometheus.prometheus
+#   roles:
+#           - nginx_exporter
+
+
+
+# - name: Install NodeExporter for PostgreSQL Master
+#   hosts: db2
+#   collections:
+#           - prometheus.prometheus
+#   roles:
+#           - postgres_exporter
+
+
+
+- name: Put Node cfg for Prometheus 
+  hosts: monitoring
+  become: yes
+  roles:
+      - monitoring_cfg
+

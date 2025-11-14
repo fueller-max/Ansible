@@ -2,6 +2,25 @@
 ---
 # tasks file for loadbalancer_angie
 
+- name: Create a directory fo SSL certs
+  ansible.builtin.file:
+    path: /etc/nginx/ssl/
+    state: directory
+    mode: '0755' 
+    owner: root 
+    group: root 
+
+- name: Copy SSL certs
+  copy:
+    src: "{{ item.src }}"
+    dest: "{{ item.dest }}"   
+    owner: root
+    group: root 
+    mode: '0644'
+  loop:
+   - { src: 'ssl/selfsigned.crt', dest: '/etc/nginx/ssl/selfsigned.crt' }
+   - { src: 'ssl/selfsigned.key', dest: '/etc/nginx/ssl/selfsigned.key' }  
+
 - name: Copy nginx.conf 
   template: 
     src: nginx.conf.j2 

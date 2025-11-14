@@ -1,6 +1,6 @@
 ---
 - name: Set hostname on target machines
-  hosts: all
+  hosts: monitor
   become: yes 
   tasks:
 

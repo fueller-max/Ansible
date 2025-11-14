@@ -1,0 +1,10 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for monitoring_cfg
+
+loadbalancer: "192.168.108.11:9113" 
+db1: "192.168.108.14:9187"
+db2: "192.168.108.15:9187"  
+
+
+postgres_exporter_user: "postgres-exp"

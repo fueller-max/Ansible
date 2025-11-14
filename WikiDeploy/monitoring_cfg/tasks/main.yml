@@ -1,0 +1,20 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for monitoring_cfg
+
+- name: Copy node.yaml to Prometheus node 
+  template: 
+    src: node.yml.j2
+    dest: /etc/prometheus/file_sd/node.yml
+    owner: root
+    group: root 
+    mode: '0644' 
+
+- name: Grant role pg_monitor to postgres_exporter user
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_membership:
+    group: pg_monitor
+    target_roles: "{{ postgres_exporter_user }}"
+    state: present
+  when: (ansible_hostname == "db1")  
