@@ -1,0 +1,27 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for grafana_cfg
+
+- name: Copy datasources file
+  become: true
+  copy:
+    src: datasources.yaml
+    dest: /etc/grafana/provisioning/datasources/datasources.yaml   
+    owner: grafana
+    group: root 
+    mode: '0644'
+
+- name: Import Grafana dashboard for Node Exporter
+  community.grafana.grafana_dashboard:
+    grafana_url: http://192.168.108.17:3000
+    grafana_user: "admin"
+    grafana_password: "grafana"
+    overwrite: true
+    path: https://grafana.com/api/dashboards/1860/revisions/42/download
+    state: present  
+
+- name: Restart the Grafana server
+  become: true 
+  ansible.builtin.service:
+    name: grafana-server
+    state: restarted

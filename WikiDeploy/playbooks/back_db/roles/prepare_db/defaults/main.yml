@@ -3,3 +3,5 @@
 # defaults file for prepare_db
 wiki_db_user: wikijs
 wiki_usr_pass: wikijsrocks
+
+postgres_exporter_user: "postgres-exp"

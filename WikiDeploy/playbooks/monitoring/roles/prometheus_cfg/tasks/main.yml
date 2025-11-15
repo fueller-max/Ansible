@@ -1,0 +1,18 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for monitoring_cfg
+
+- name: Copy prometheus.yml to Prometheus node 
+  template: 
+    src: prometheus.yml.j2
+    dest: /etc/prometheus/prometheus.yml
+    owner: prometheus
+    group: prometheus 
+    mode: '0644' 
+ 
+
+- name: Restart the Prometheus
+  become: true 
+  ansible.builtin.service:
+    name: prometheus
+    state: restarted 

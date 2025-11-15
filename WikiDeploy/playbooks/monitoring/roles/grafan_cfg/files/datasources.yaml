@@ -1,0 +1,39 @@
+# Configuration file version
+apiVersion: 1
+
+# List of data sources to insert/update depending on what's
+# available in the database.
+datasources:
+    - name: Prometheus
+      type: prometheus
+      url: http://192.168.108.16:9090
+      access: proxy
+      isDefault: true
+      editable: true
+      version: 1
+      orgId: 1
+        # Add any other specific settings for your data source
+        # For example, for Prometheus, you might add:
+        # basicAuth: false
+        # jsonData:
+        #   tlsAuth: false
+        #   tlsAuthWithCACert: false
+        #   withCredentials: false
+        # secureJsonData:
+
+    - name: Loki
+      type: loki
+      access: proxy
+      url: http://loki:3100 # Replace with your Loki instance's URL and port
+      isDefault: false
+      editable: true
+      jsonData:
+      # Optional: Add any specific JSON data for the Loki datasource
+      # e.g., Derived fields, custom HTTP headers, etc.
+      # derivedFields:
+      #   - name: TraceID
+      #     matcherRegex: "traceID=(\\w+)"#     urlLabel: "View in Tempo"
+      secureJsonData:
+      # Optional: Sensitive data like API keys or passwords can be stored here
+      # and referenced in jsonData using secureJsonData keys.
+      # httpHeaderValue1: "your_api_key"    

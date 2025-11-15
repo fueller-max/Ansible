@@ -22,3 +22,18 @@
     lc_ctype: en_US.UTF-8 # Optional: Ctype settings
     state: present # Ensure the database exists
   when: (ansible_hostname == "db1")  
+
+- name: Create PostgreSQL user fot postgres_exporter
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    name: "{{ postgres_exporter_user }}"
+    state: present
+  
+- name: Grant role pg_monitor to postgres_exporter user
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_membership:
+    group: pg_monitor
+    target_roles: "{{ postgres_exporter_user }}"
+    state: present

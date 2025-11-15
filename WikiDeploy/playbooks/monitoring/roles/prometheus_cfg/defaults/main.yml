@@ -1,0 +1,18 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for monitoring_cfg
+firewall_ne:      "192.168.108.10:9100"
+loadbalancer_ne:  "192.168.108.11:9100"
+backend1_ne:      "192.168.108.12:9100"
+backend2_ne:      "192.168.108.13:9100"
+db1_ne:           "192.168.108.14:9100"
+db2_ne:           "192.168.108.15:9100"
+monitor_ne:       "192.168.108.16:9100"
+loki_ne:          "192.168.108.17:9100"
+
+
+loadbalancer_nge: "192.168.108.11:9113" 
+db1_pge: "192.168.108.14:9187"
+db2_pge: "192.168.108.15:9187"  
+
+
