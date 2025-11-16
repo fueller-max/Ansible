@@ -1,0 +1,19 @@
+- name: Manage loki service
+  hosts: loki
+  become: true
+  roles:
+    # - role: grafana.grafana.loki
+    # - role: grafana.grafana.grafana
+    #   vars:
+    #     grafana_ini:
+    #       security:
+    #         admin_user: admin
+    #         admin_password: grafana
+      - role: grafan_cfg
+
+# - name: Install Node Exporter on host
+#   hosts: loki
+#   collections:
+#           - prometheus.prometheus
+#   roles:
+#           - node_exporter  

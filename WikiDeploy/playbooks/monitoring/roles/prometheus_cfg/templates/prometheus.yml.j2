@@ -25,7 +25,7 @@ scrape_configs:
     metrics_path: /metrics
     static_configs:
     - targets:
-      - monitor:9090
+      - prometheus:9090
 
   #  ---- Node Exporters for all nodes
   - job_name: firewall_ne
@@ -52,9 +52,9 @@ scrape_configs:
     static_configs:
     - targets: [ "{{ db2_ne }}"]  
 
-  - job_name: monitor_ne
+  - job_name: prometheus_ne
     static_configs:
-    - targets: [ "{{ monitor_ne }}"]
+    - targets: [ "{{ prometheus_ne }}"]
                
   - job_name: loki_ne
     static_configs:

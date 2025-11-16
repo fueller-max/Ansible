@@ -4,3 +4,17 @@
   roles: 
     #- install_nginx
     - loadbalancer_nginx
+
+# - name: Install Nginx Exporter for LoadBalancer
+#   hosts: loadbalancer
+#   collections:
+#           - prometheus.prometheus
+#   roles:
+#           - nginx_exporter   
+
+# - name: Install Node Exporter on host
+#   hosts: prometheus
+#   collections:
+#           - prometheus.prometheus
+#   roles:
+#           - node_exporter          

@@ -3,7 +3,7 @@
   hosts: loki
   become: yes 
   tasks:
-
+    
     - name: Set the hostname to inventory_hostname
       shell: hostnamectl set-hostname "{{ inventory_hostname }}"
 
