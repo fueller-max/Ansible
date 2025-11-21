@@ -7,7 +7,7 @@
     path: "{{ dashboards_path_rem }}"
     state: directory
     owner: root
-    group: grafana
+    group: root
     mode: '0755'
     recurse: yes
 
@@ -15,8 +15,8 @@
   ansible.builtin.copy:
     src:  "{{ dashboards_path_loc + '/'}}"
     dest: "{{ dashboards_path_rem + '/'}}"
-    owner: grafana
-    group: grafana
+    owner: root
+    group: root
     mode: '0644' 
      
 
@@ -43,8 +43,8 @@
     path:  "{{ item.path }}" 
   loop: "{{ dashboard_files.files }}"  
 
-- name: Restart the Grafana server
-  become: true 
-  ansible.builtin.service:
-    name: grafana-server
-    state: restarted  
+# - name: Restart the Grafana server
+#   become: true 
+#   ansible.builtin.service:
+#     name: grafana-server
+#     state: restarted  

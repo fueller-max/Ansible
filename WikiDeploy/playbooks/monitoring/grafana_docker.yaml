@@ -1,0 +1,9 @@
+- name: Manage Grafana service
+  hosts: grafana
+  become: true
+  roles:
+    #   - role: install_docker
+       - role: grafana_datasources 
+       - role: grafana_docker
+       - role: grafana_dashboards
+       

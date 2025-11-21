@@ -24,7 +24,7 @@ datasources:
     - name: Loki
       type: loki
       access: proxy
-      url: http://loki:3100 # Replace with your Loki instance's URL and port
+      url: http://192.168.108.17:3100 # Replace with your Loki instance's URL and port
       isDefault: false
       editable: true
       jsonData:

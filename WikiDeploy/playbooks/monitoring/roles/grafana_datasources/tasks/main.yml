@@ -6,10 +6,17 @@
   become: true
   copy:
     src: datasources.yaml
-    dest: /etc/grafana/provisioning/datasources/datasources.yaml   
-    owner: grafana
+   # dest: /etc/grafana/provisioning/datasources/datasources.yaml 
+    dest: /etc/grafana/datasources/datasources.yaml 
+    owner: root
     group: root 
-    mode: '0644'
+    mode: '0777'
+
+# - name: Restart the Grafana server
+#   become: true 
+#   ansible.builtin.service:
+#     name: grafana-server
+#     state: restarted
 
 
 # - name: Import Grafana dashboard for Node Exporter
@@ -57,11 +64,7 @@
 #     dashboard_url: "C:/Users/User/Downloads/dashboards/20478_rev1.json"
 #     state: present   
 
-- name: Restart the Grafana server
-  become: true 
-  ansible.builtin.service:
-    name: grafana-server
-    state: restarted
+
 
 
     
