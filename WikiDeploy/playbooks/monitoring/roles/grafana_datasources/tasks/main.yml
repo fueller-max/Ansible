@@ -2,14 +2,15 @@
 ---
 # tasks file for grafana_cfg
 
-# - name: Copy datasources file
-#   become: true
-#   copy:
-#     src: datasources.yaml
-#     dest: /etc/grafana/provisioning/datasources/datasources.yaml   
-#     owner: grafana
-#     group: root 
-#     mode: '0644'
+- name: Copy datasources file
+  become: true
+  copy:
+    src: datasources.yaml
+    dest: /etc/grafana/provisioning/datasources/datasources.yaml   
+    owner: grafana
+    group: root 
+    mode: '0644'
+
 
 # - name: Import Grafana dashboard for Node Exporter
 #   community.grafana.grafana_dashboard:
@@ -47,14 +48,14 @@
 #     path: https://grafana.com/api/dashboards/14752/revisions/1/download
 #     state: present  
 
-- name: Import Grafana dashboard for NGINX Service Mesh
-  community.grafana.grafana_dashboard:
-    grafana_url: http://192.168.108.17:3000
-    grafana_user: "admin"
-    grafana_password: "grafana"
-    overwrite: true
-    dashboard_url: "C:/Users/User/Downloads/dashboards/20478_rev1.json"
-    state: present      
+# - name: Import Grafana dashboard for NGINX Service Mesh
+#   community.grafana.grafana_dashboard:
+#     grafana_url: http://192.168.108.17:3000
+#     grafana_user: "admin"
+#     grafana_password: "grafana"
+#     overwrite: true
+#     dashboard_url: "C:/Users/User/Downloads/dashboards/20478_rev1.json"
+#     state: present   
 
 - name: Restart the Grafana server
   become: true 

@@ -1,20 +1,20 @@
-- name: Install Angie and setup as a load balancer
+- name: Install Nginx and setup as a load balancer
   hosts: loadbalancer
   become: yes
   roles: 
-    #- install_nginx
+    - install_nginx
     - loadbalancer_nginx
 
-# - name: Install Nginx Exporter for LoadBalancer
-#   hosts: loadbalancer
-#   collections:
-#           - prometheus.prometheus
-#   roles:
-#           - nginx_exporter   
+- name: Install Nginx Exporter for LoadBalancer
+  hosts: loadbalancer
+  collections:
+          - prometheus.prometheus
+  roles:
+          - nginx_exporter   
 
-# - name: Install Node Exporter on host
-#   hosts: prometheus
-#   collections:
-#           - prometheus.prometheus
-#   roles:
-#           - node_exporter          
+- name: Install Node Exporter on host
+  hosts: prometheus
+  collections:
+          - prometheus.prometheus
+  roles:
+          - node_exporter          

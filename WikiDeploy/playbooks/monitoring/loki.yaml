@@ -1,0 +1,12 @@
+- name: Manage loki service
+  hosts: loki
+  become: true
+  roles:
+     - role: grafana.grafana.loki
+
+- name: Install Node Exporter on host
+  hosts: loki
+  collections:
+          - prometheus.prometheus
+  roles:
+          - node_exporter  

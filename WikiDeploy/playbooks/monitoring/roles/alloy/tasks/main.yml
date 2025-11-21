@@ -1,0 +1,168 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for alloy
+
+- name: Deploy Alloy on firewall
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy
+  vars:
+      alloy_config: |
+        local.file_match "local_files" {
+           path_targets = [{"__path__" = "/var/log/*.log"}]
+           sync_period = "5s" 
+        }
+        loki.source.file "log_scrape" {
+           targets    = local.file_match.local_files.targets
+           forward_to = [loki.write.loki_instance.receiver]
+        }
+
+        loki.source.journal "read_journal_firewall" {                     // Read journalctl
+            max_age       = "24h0m0s"
+            forward_to = [loki.write.loki_instance.receiver] 
+            labels = {component = "loki.source.journal"}
+        }
+        
+        loki.write "loki_instance" {
+           endpoint {
+              url = "http://192.168.108.17:3100/loki/api/v1/push" //Loki endpoint
+           }
+        }        
+  when: (ansible_hostname == "firewall")  
+
+- name: Deploy Alloy on load balancer
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy
+  vars:
+    alloy_config: |
+        local.file_match "local_files" {
+           path_targets = [
+           {"__path__" = "/var/log/*.log"},
+           {"__path__" = "/var/log/nginx/*.log"}]
+           sync_period = "5s" 
+        }
+        loki.source.file "log_scrape" {
+           targets    = local.file_match.local_files.targets
+           forward_to = [loki.write.loki_instance.receiver]
+        }
+
+        loki.source.journal "read_journal_loadbalancer" {                     // Read journalctl
+            max_age       = "24h0m0s"
+            forward_to = [loki.write.loki_instance.receiver] 
+            labels = {component = "loki.source.journal"}
+        }
+
+        loki.write "loki_instance" {
+           endpoint {
+              url = "http://192.168.108.17:3100/loki/api/v1/push" //Loki endpoint
+           }
+        }
+  when: (ansible_hostname == "loadbalancer")      
+
+- name: Deploy Alloy on backend1
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy
+  vars:
+    alloy_config: |
+        local.file_match "local_files" {
+           path_targets = [{"__path__" = "/var/log/*.log"}]
+           sync_period = "5s" 
+        }
+        loki.source.file "log_scrape" {
+           targets    = local.file_match.local_files.targets
+           forward_to = [loki.write.loki_instance.receiver]
+        }
+
+        loki.source.journal "read_journal_backend_1" {                     // Read journalctl
+            max_age       = "24h0m0s"
+            forward_to = [loki.write.loki_instance.receiver] 
+            labels = {component = "loki.source.journal"}
+        }
+        
+        loki.write "loki_instance" {
+           endpoint {
+              url = "http://192.168.108.17:3100/loki/api/v1/push" //Loki endpoint
+           }
+        }        
+  when: (ansible_hostname == "backend1")  
+
+
+- name: Deploy Alloy on backend2
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy
+  vars:
+    alloy_config: |
+        local.file_match "local_files" {
+           path_targets = [{"__path__" = "/var/log/*.log"}]
+           sync_period = "5s" 
+        }
+        loki.source.file "log_scrape" {
+           targets    = local.file_match.local_files.targets
+           forward_to = [loki.write.loki_instance.receiver]
+        }
+
+        loki.source.journal "read_journal_backend_2" {                     // Read journalctl
+            max_age       = "24h0m0s"
+            forward_to = [loki.write.loki_instance.receiver] 
+            labels = {component = "loki.source.journal"}
+        }
+        
+        loki.write "loki_instance" {
+           endpoint {
+              url = "http://192.168.108.17:3100/loki/api/v1/push" //Loki endpoint
+           }
+        }        
+  when: (ansible_hostname == "backend2")     
+
+- name: Deploy Alloy on db1
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy
+  vars:
+    alloy_config: |
+        local.file_match "local_files" {
+           path_targets = [{"__path__" = "/var/log/*.log"}]
+           sync_period = "5s" 
+        }
+        loki.source.file "log_scrape" {
+           targets    = local.file_match.local_files.targets
+           forward_to = [loki.write.loki_instance.receiver]
+        }
+
+        loki.source.journal "read_journal_db_1" {                     // Read journalctl
+            max_age       = "24h0m0s"
+            forward_to = [loki.write.loki_instance.receiver] 
+            labels = {component = "loki.source.journal"}
+        }
+        
+        loki.write "loki_instance" {
+           endpoint {
+              url = "http://192.168.108.17:3100/loki/api/v1/push" //Loki endpoint
+           }
+        }        
+  when: (ansible_hostname == "db1")
+
+- name: Deploy Alloy on db2
+  ansible.builtin.include_role:
+    name: grafana.grafana.alloy
+  vars:
+    alloy_config: |
+        local.file_match "local_files" {
+           path_targets = [{"__path__" = "/var/log/*.log"}]
+           sync_period = "5s" 
+        }
+        loki.source.file "log_scrape" {
+           targets    = local.file_match.local_files.targets
+           forward_to = [loki.write.loki_instance.receiver]
+        }
+
+        loki.source.journal "read_journal_db_2" {                     // Read journalctl
+            max_age       = "24h0m0s"
+            forward_to = [loki.write.loki_instance.receiver] 
+            labels = {component = "loki.source.journal"}
+        }
+        
+        loki.write "loki_instance" {
+           endpoint {
+              url = "http://192.168.108.17:3100/loki/api/v1/push" //Loki endpoint
+           }
+        }        
+  when: (ansible_hostname == "db2")   

@@ -37,3 +37,10 @@
     group: pg_monitor
     target_roles: "{{ postgres_exporter_user }}"
     state: present
+
+- name: Install Postgres Exporter for PostgreSQL Master
+  hosts: db2
+  collections:
+          - prometheus.prometheus
+  roles:
+          - postgres_exporter    

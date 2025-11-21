@@ -1,0 +1,50 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for grafana_dashboards
+
+- name: Create a directory for dasboards
+  ansible.builtin.file:
+    path: "{{ dashboards_path_rem }}"
+    state: directory
+    owner: root
+    group: grafana
+    mode: '0755'
+    recurse: yes
+
+- name: Copy Dasboards to Grafana host
+  ansible.builtin.copy:
+    src:  "{{ dashboards_path_loc + '/'}}"
+    dest: "{{ dashboards_path_rem + '/'}}"
+    owner: grafana
+    group: grafana
+    mode: '0644' 
+     
+
+- name: Find dashboard JSON files
+  find:
+    paths: "{{ dashboards_path_rem + '/'}}"
+    file_type: file
+    recurse: yes
+    patterns: "*.json"
+  register: dashboard_files
+
+- name: Print DEBUG message
+  ansible.builtin.debug:
+    var:  dashboard_files.files
+
+- name: Import Grafana dashboard foo
+  community.grafana.grafana_dashboard:
+    grafana_url: "{{ grafana_url }}"
+    grafana_user: "admin"
+    grafana_password: "grafana"
+    state: present
+    commit_message: Updated by ansible
+    overwrite: true
+    path:  "{{ item.path }}" 
+  loop: "{{ dashboard_files.files }}"  
+
+- name: Restart the Grafana server
+  become: true 
+  ansible.builtin.service:
+    name: grafana-server
+    state: restarted  

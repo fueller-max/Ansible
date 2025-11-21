@@ -1,6 +1,0 @@
-#SPDX-License-Identifier: MIT-0
----
-# defaults file for grafana_cfg
-
-grafana_user: "admin"
-grafana_password: "grafana"

@@ -15,8 +15,11 @@
     group: root 
     mode: '0644' 
  
-- name: restore firewall rules
+- name: Restore firewall rules
   shell: sudo iptables-restore < /etc/iptables/rules.ipv4
+
+- name: Save rules persistent
+  shell:   netfilter-persistent save
 
 - name: Setup package forwarding
   sysctl:

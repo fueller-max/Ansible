@@ -6,9 +6,9 @@
   roles: 
      - iptables_fwd
 
-# - name: Install Node Exporter on host
-#   hosts: firewall
-#   collections:
-#           - prometheus.prometheus
-#   roles:
-#           - node_exporter
+- name: Install Node Exporter on host
+  hosts: firewall
+  collections:
+          - prometheus.prometheus
+  roles:
+          - node_exporter

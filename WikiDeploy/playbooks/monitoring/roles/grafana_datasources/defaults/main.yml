@@ -1,0 +1,9 @@
+#SPDX-License-Identifier: MIT-0
+---
+# defaults file for grafana_cfg
+
+grafana_user: "admin"
+grafana_password: "grafana"
+
+grafana_url: http://192.168.108.17:3000
+dashboards_path: /home/ansible/PROJECTS/WikiDeploy/playbooks/monitoring/roles/grafan_cfg/files

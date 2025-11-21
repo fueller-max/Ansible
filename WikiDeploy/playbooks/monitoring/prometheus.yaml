@@ -20,21 +20,6 @@
   roles:
           - node_exporter
 
-# - name: Install Nginx Exporter for LoadBalancer
-#   hosts: loadbalancer
-#   collections:
-#           - prometheus.prometheus
-#   roles:
-#           - nginx_exporter
-
-
-# - name: Install Postgres Exporter for PostgreSQL Master
-#   hosts: db2
-#   collections:
-#           - prometheus.prometheus
-#   roles:
-#           - postgres_exporter
-
 
 
 
