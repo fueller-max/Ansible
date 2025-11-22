@@ -1,0 +1,7 @@
+#SPDX-License-Identifier: MIT-0
+---
+# vars file for postgres_pitr
+master_ip_repl:  '172.21.100.10'
+slave_ip_repl:  '172.21.100.11'
+
+base_bakup_dir: ''

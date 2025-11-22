@@ -1,0 +1,5 @@
+#!/bin/bash
+backup_dir="$(date +'%Y-%m-%d-%H-%M')_backup"
+cd /mnt/db/backups
+mkdir $backup_dir
+pg_basebackup -h {{ slave_ip_repl }} -U replicator -p 5432 -D $backup_dir -Ft -z

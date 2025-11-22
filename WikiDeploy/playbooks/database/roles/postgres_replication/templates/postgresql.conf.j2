@@ -290,6 +290,11 @@ min_wal_size = 80MB
 
 # - Archiving -
 
+{% if ansible_hostname == 'db1' %}
+archive_mode = on	                                                                     # minimal, replica, or logical
+archive_command = 'rsync -av -z %p postgres@pitrseveralnines:/mnt/db/wal_archive/%f'
+{% endif %} 
+
 #archive_mode = off		# enables archiving; off, on, or always
 				# (change requires restart)
 #archive_library = ''		# library to use to archive a WAL file

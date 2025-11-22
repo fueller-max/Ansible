@@ -135,3 +135,5 @@ host    replication     all             127.0.0.1/32            scram-sha-256
 host    replication     all             ::1/128                 scram-sha-256
 host    replication     replicator      {{ master_ip_repl }}/32      scram-sha-256
 host    replication     replicator      {{ slave_ip_repl }}/32       scram-sha-256
+host    replication     replicator      {{ pitr_ip }}/32       scram-sha-256
+

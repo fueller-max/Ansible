@@ -7,6 +7,7 @@ master_ip: '172.21.40.10'
 
 master_ip_repl: '172.21.100.10' 
 slave_ip_repl:  '172.21.100.11'
+pitr_ip:        '172.21.100.13'
 
 remote_net: '172.21.40.0/24'
 mgm_net: '172.21.108.0/24'

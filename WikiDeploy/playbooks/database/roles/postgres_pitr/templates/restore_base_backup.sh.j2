@@ -1,0 +1,18 @@
+#!/bin/bash
+
+version="18" # Postgres version
+ 
+echo "Stop PostgreSQL service..."
+systemctl stop postgresql                                                                          # Stop PostgreSQL 
+
+mv /var/lib/postgresql/$version/main /var/lib/postgresql/$version/main_old                   # Make a backup of directory
+
+mkdir -p /var/lib/postgresql/$version/main                                                    # Create a directory
+
+chown -R postgres:postgres /var/lib/postgresql/$version/main                                  # Change owner 
+chmod 700 /var/lib/postgresql/$version/main
+
+tar -xvf /mnt/db/backups/backup/base.tar.gz -C /var/lib/postgresql/$version/main             # Extract backup
+
+echo "Start PostgreSQL service..."
+systemctl start postgresql                                                                         # Start PostgreSQL                            

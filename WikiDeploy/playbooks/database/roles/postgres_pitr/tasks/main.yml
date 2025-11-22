@@ -1,0 +1,105 @@
+#SPDX-License-Identifier: MIT-0
+---
+# tasks file for postgres_pitr
+
+# --- Setup SSH infrustruture   ------
+
+# - name: Generate SSH key on Master DB
+#   user: 
+#     name: user
+#     generate_ssh_key: yes 
+#     ssh_key_type: rsa 
+#     ssh_key_bits: 4096 
+#     force: no 
+#   when: (ansible_hostname == "db1")
+
+# - name: Generate SSH key on PITR node
+#   user: 
+#     name: user
+#     generate_ssh_key: yes 
+#     ssh_key_type: rsa 
+#     ssh_key_bits: 4096 
+#     force: no 
+#   when: (ansible_hostname == "pitr")
+
+#    # --- DB -> PITR   ----
+
+# - name: Get public key from DB
+#   shell: cat /home/user/.ssh/id_rsa.pub 
+#   register: ssh_keys
+#   when: (ansible_hostname == "db1")
+
+# - name: Transfer public key to PITR 
+#   delegate_to: pitr 
+#   authorized_key: 
+#     key: "{{ ssh_keys.stdout }}"
+#     comment: "{{ansible_hostname}}" 
+#     user: user 
+#   when: (ansible_hostname == "db1")   
+
+#    # ---   end   ----
+  
+#    # --- PITR -> DB   ----
+
+# - name: Fetch all public ssh keys from pitr 
+#   shell: cat /home/user/.ssh/id_rsa.pub 
+#   register: ssh_keys 
+#   when: (ansible_hostname == "pitr")
+
+# - name: Transfer public key to DB 
+#   delegate_to: db1
+#   authorized_key:
+#      key: "{{ ssh_keys.stdout }}" 
+#      comment: "{{ansible_hostname}}" 
+#      user: user 
+#   when: (ansible_hostname == "pitr")
+
+   # ---   end   ----
+
+# ----     END SSH              ------  
+
+
+# - name: Create a directory for wall_files on pitr
+#   ansible.builtin.file:
+#     path: /mnt/db/wal_archive
+#     state: directory
+#     owner: user
+#     group: user
+#     mode: '0755'
+#   when: (ansible_hostname == "pitr")
+
+# - name: Create a directory for backups on pitr and DB
+#   ansible.builtin.file:
+#     path: /mnt/db/backups
+#     state: directory
+#     owner: user
+#     group: user
+#     mode: '0755'
+#   when: (ansible_hostname == "pitr" or ansible_hostname == "db1" )
+
+- name: Copy script for base backup (DB master -> PITR)
+  ansible.builtin.template:
+    src: db_base_backup.sh.j2
+    dest: /mnt/db/backups/db_base_backup.sh
+    owner: user
+    group: user
+    mode: '0755'
+  when: (ansible_hostname == "pitr")
+
+- name: Copy script for copying base backup to DB master 
+  ansible.builtin.template:
+    src: copy_base_backup.sh.j2
+    dest: /mnt/db/backups/copy_base_backup.sh
+    owner: user
+    group: user
+    mode: '0755'
+  when: (ansible_hostname == "pitr")  
+
+- name: Copy script for restore base backup on DB master 
+  ansible.builtin.template:
+    src: restore_base_backup.sh.j2
+    dest: /mnt/db/backups/restore_base_backup.sh
+    owner: user
+    group: user
+    mode: '0755'
+  when: (ansible_hostname == "db1")   
