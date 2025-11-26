@@ -1,0 +1,15 @@
+# PostgreSQL infrastructure setup 
+
+- name: Install postgres 18 on db1 and db2
+  hosts:  db1,db2
+  become: yes 
+  roles: 
+      - install_postgres
+      - postgres_replication 
+      - prepare_db
+
+- name: Install Postgres Exporter for PostgreSQL 
+  collections:
+          - prometheus.prometheus
+  roles:
+          - postgres_exporter     

@@ -1,0 +1,8 @@
+# PostgreSQL infrastructure setup 
+
+- name: Install PITR node
+  hosts: pitr,db1
+  become: yes 
+  roles: 
+    #  - install_postgres
+       - postgres_pitr

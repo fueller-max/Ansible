@@ -1,0 +1,9 @@
+---
+- name: Set hostname on target machines
+  hosts: db1
+  become: yes 
+  tasks:
+    
+    - name: Set the hostname to inventory_hostname
+      shell: hostnamectl set-hostname "{{ inventory_hostname }}"
+

@@ -311,7 +311,7 @@ archive_command = 'rsync -av -z %p postgres@pitrseveralnines:/mnt/db/wal_archive
 
 # These are only used in recovery mode.
 
-#restore_command = ''		# command to use to restore an archived WAL file
+restore_command = 'cp /mnt/db/backups/backup/pg_wal/%f "%p"'		# command to use to restore an archived WAL file
 				# placeholders: %p = path of file to restore
 				#               %f = file name only
 				# e.g. 'cp /mnt/server/archivedir/%f %p'

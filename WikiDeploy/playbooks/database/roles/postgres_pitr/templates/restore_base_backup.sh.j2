@@ -1,18 +1,40 @@
 #!/bin/bash
-
+###############################################################################
+##     DATABASE RESOTRE SCRIPT
+##
+###############################################################################
+backup_dir="/mnt/db/backups/backup"
+wal_dir=""
 version="18" # Postgres version
  
 echo "Stop PostgreSQL service..."
-systemctl stop postgresql                                                                          # Stop PostgreSQL 
+systemctl stop postgresql                                                                    # Stop PostgreSQL 
 
-mv /var/lib/postgresql/$version/main /var/lib/postgresql/$version/main_old                   # Make a backup of directory
+                                                                                              
+rm -rf  /var/lib/postgresql/$version/main_old                                                # Delete 
+mv /var/lib/postgresql/$version/main /var/lib/postgresql/$version/main_old                   # Make a backup of existing cluster to main_old
 
-mkdir -p /var/lib/postgresql/$version/main                                                    # Create a directory
+mkdir -p /var/lib/postgresql/$version/main                                                   # Create a new directory for cluster
 
-chown -R postgres:postgres /var/lib/postgresql/$version/main                                  # Change owner 
+chown -R postgres:postgres /var/lib/postgresql/$version/main                                 # Change main`s owner, mode for postgres
 chmod 700 /var/lib/postgresql/$version/main
 
-tar -xvf /mnt/db/backups/backup/base.tar.gz -C /var/lib/postgresql/$version/main             # Extract backup
+tar -xvf $backup_dir/base.tar.gz -C /var/lib/postgresql/$version/main                        # Extract backup to main directory
+
+
+mkdir -p $backup_dir/pg_wal                                                                  #Create a directory for wal files
+chmod 700 $backup_dir/pg_wal 
+
+tar -xvf $backup_dir/pg_wal.tar.gz  -C $backup_dir/pg_wal                                    #Extract wal files
+chmod -R 755 $backup_dir/pg_wal 
+
+touch /var/lib/postgresql/$version/main/recovery.signal                                      # Create recover signal
+chown postgres:postgres /var/lib/postgresql/$version/main/recovery.signal
 
 echo "Start PostgreSQL service..."
-systemctl start postgresql                                                                         # Start PostgreSQL                            
+systemctl start postgresql                                                                   # Start PostgreSQL                            
+
+
+rm /var/lib/postgresql/$version/main/recovery.signal                                         # Remove recover signal
+
+sudo -u postgres /usr/lib/postgresql/18/bin/pg_ctl  promote -D /var/lib/postgresql/18/main   # Promote server

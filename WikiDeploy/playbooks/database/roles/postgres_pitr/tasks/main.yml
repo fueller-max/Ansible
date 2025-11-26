@@ -39,7 +39,7 @@
 
 #    # ---   end   ----
   
-#    # --- PITR -> DB   ----
+   # --- PITR -> DB   ----
 
 # - name: Fetch all public ssh keys from pitr 
 #   shell: cat /home/user/.ssh/id_rsa.pub 
