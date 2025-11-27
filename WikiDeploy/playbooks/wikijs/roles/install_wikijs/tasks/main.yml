@@ -1,38 +1,54 @@
 #SPDX-License-Identifier: MIT-0
-
+---
 # tasks file for install_wikijs
 
-- name: Create a directory for Wiki in /var/wiki 
-  ansible.builtin.file:
-    path: /var/wiki
-    state: directory
-    mode: '0755'
-    owner: user
-    group: user
+- name: Create system group
+  group:
+    name: "{{ wikijs_system_group }}"
+    system: true
+
+- name: Create system user
+  user:
+    name: "{{ wikijs_system_user }}"
+    group: "{{ wikijs_system_group }}"
+    groups: "{{ wikijs_user_additional_groups }}"
+    comment: "Service account for wikijs."
+    create_home: false
+    shell: /usr/sbin/nologin
+    system: true   
+
+- name: Create a directory for Wiki 
+  file:
+    path: "{{ wikijs_download_dest }}"
+    state: directory     
+
+- name: Set ownership
+  file:
+    path: "{{ wikijs_download_dest }}/"
+    owner: "{{ wikijs_system_user }}"
+    group: "{{ wikijs_system_group }}"
+    recurse: true    
+
 
 - name: Download the latest version of Wiki.js to the directory
   ansible.builtin.command: wget https://github.com/Requarks/wiki/releases/latest/download/wiki-js.tar.gz
   args:
-    chdir: /var/wiki
+    chdir: "{{ wikijs_download_dest }}/"
 
 - name: Extract the package to the final destination
   ansible.builtin.command: tar xzf wiki-js.tar.gz
   args:
-    chdir: /var/wiki 
+    chdir: "{{ wikijs_download_dest }}/"
 
-- name: Delete wiki-js.tar.gz
-  ansible.builtin.file:
-     path: /var/wiki/wiki-js.tar.gz
-     state: absent 
 
 - name: Copy config.yaml  
   template: 
     src: config.yml.j2 
-    dest: /var/wiki/config.yml 
+    dest: "{{ wikijs_download_dest }}/config.yml" 
 
 - name: Delete config.sample.yml
   ansible.builtin.file:
-     path: /var/wiki/config.sample.yml
+     path: "{{ wikijs_download_dest }}/config.sample.yml"
      state: absent 
 
 - name: install Node.js
@@ -41,17 +57,17 @@
         - nodejs
       state: present 
 
-- name: Set permissions on a /var
+- name: Set permissions on a /var/wiki
   ansible.builtin.file:
-    path: /var
+    path: "{{ wikijs_download_dest }}/data"
     mode: '0777'   
 
 - name: Copy wiki.service to /etc/systemd/system
   ansible.builtin.copy:
     src: wiki.service  
     dest: /etc/systemd/system
-    owner: user
-    group: user 
+    owner: "{{ wikijs_system_user }}"
+    group: "{{ wikijs_system_group }}" 
     mode: '0644' 
 
 - name: Reload systemd

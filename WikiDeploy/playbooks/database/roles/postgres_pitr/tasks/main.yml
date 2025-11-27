@@ -59,23 +59,23 @@
 # ----     END SSH              ------  
 
 
-# - name: Create a directory for wall_files on pitr
-#   ansible.builtin.file:
-#     path: /mnt/db/wal_archive
-#     state: directory
-#     owner: user
-#     group: user
-#     mode: '0755'
-#   when: (ansible_hostname == "pitr")
+- name: Create a directory for wall_files on pitr
+  ansible.builtin.file:
+    path: /mnt/db/wal_archive
+    state: directory
+    owner: user
+    group: user
+    mode: '0755'
+  when: (ansible_hostname == "pitr")
 
-# - name: Create a directory for backups on pitr and DB
-#   ansible.builtin.file:
-#     path: /mnt/db/backups
-#     state: directory
-#     owner: user
-#     group: user
-#     mode: '0755'
-#   when: (ansible_hostname == "pitr" or ansible_hostname == "db1" )
+- name: Create a directory for backups on pitr and DB
+  ansible.builtin.file:
+    path: /mnt/db/backups
+    state: directory
+    owner: user
+    group: user
+    mode: '0755'
+  when: (ansible_hostname == "pitr" or ansible_hostname == "db1" )
 
 - name: Copy script for base backup (DB master -> PITR)
   ansible.builtin.template:
@@ -103,3 +103,38 @@
     group: user
     mode: '0755'
   when: (ansible_hostname == "db1")   
+
+
+- name: install Python tools 
+  apt: 
+    name: 
+     - python3-pip
+     - python3-dev
+     - libpq-dev  
+     - python3-psycopg2
+    state: present 
+    update_cache: true
+  when: (ansible_hostname == "pitr")
+
+- name: Install ACL on the remote host
+  ansible.builtin.apt:
+        name: acl
+        state: present
+  when: (ansible_hostname == "pitr")
+
+- name: Create PostgreSQL user fot postgres_exporter
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_user:
+    name: "{{ postgres_exporter_user }}"
+    state: present
+  when: (ansible_hostname == "pitr") 
+
+- name: Grant role pg_monitor to postgres_exporter user
+  become: true
+  become_user: postgres
+  community.postgresql.postgresql_membership:
+    group: pg_monitor
+    target_roles: "{{ postgres_exporter_user }}"
+    state: present
+  when: (ansible_hostname == "pitr") 

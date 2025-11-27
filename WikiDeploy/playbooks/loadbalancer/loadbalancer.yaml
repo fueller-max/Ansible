@@ -13,7 +13,7 @@
           - nginx_exporter   
 
 - name: Install Node Exporter on host
-  hosts: prometheus
+  hosts: loadbalancer
   collections:
           - prometheus.prometheus
   roles:

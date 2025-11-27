@@ -1,0 +1,18 @@
+# Wikijs infrastructure setup 
+
+- name: Install Wikij on backend server
+  hosts: backend2
+  become: yes
+  roles: 
+    - install_wikijs
+
+- name: Install Node Exporter on host
+  hosts: backend2
+  collections:
+          - prometheus.prometheus
+  roles:
+          - node_exporter      
+
+
+
+     

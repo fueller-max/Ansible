@@ -7,6 +7,7 @@
      - python3-pip
      - python3-dev
      - libpq-dev  
+     - python3-psycopg2
     state: present 
     update_cache: true
   
@@ -114,5 +115,18 @@
     name: postgresql 
     state: started 
   when: (ansible_hostname == "db2")  
+
+- name: Install acl package
+  apt:
+     name: acl
+     state: present
+     update_cache: yes    
+  when: (ansible_hostname == "db2")
+
+- name: Install psycopg2 (needed for the user creation)
+  apt:
+     name: python3-psycopg2
+     state: present  
+  when: (ansible_hostname == "db2")
 
 # --- end of slave-node  setup           ----

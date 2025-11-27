@@ -10,3 +10,10 @@ db: 'wiki'
 
 backend1_listen_ip: '172.21.30.10'
 backend2_listen_ip: '172.21.30.11'
+
+
+wikijs_system_user: wikijs
+wikijs_system_group: wikijs
+wikijs_user_additional_groups: ""
+
+wikijs_download_dest: /usr/local/wikijs

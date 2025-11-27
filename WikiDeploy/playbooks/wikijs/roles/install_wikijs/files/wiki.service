@@ -7,9 +7,9 @@ Type=simple
 ExecStart=/usr/bin/node server
 Restart=always
 # Consider creating a dedicated user for Wiki.js here:
-User=user
+User=wikijs
 Environment=NODE_ENV=production
-WorkingDirectory=/var/wiki
+WorkingDirectory=/usr/local/wikijs
 
 [Install]
 WantedBy=multi-user.target

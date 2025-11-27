@@ -1,8 +1,28 @@
 # PostgreSQL infrastructure setup 
 
-- name: Install PITR node
+- name: Install Postgresql on PITR node
+  hosts: pitr
+  become: yes 
+  roles: 
+       - install_postgres
+
+- name: Setup PITR infrastructure 
   hosts: pitr,db1
   become: yes 
   roles: 
-    #  - install_postgres
-       - postgres_pitr
+       - postgres_pitr       
+
+- name: Install Postgres Exporter for PostgreSQL 
+  hosts: pitr
+  collections:
+          - prometheus.prometheus
+  roles:
+          - postgres_exporter
+
+
+- name: Install Node Exporter on host
+  hosts: pitr
+  collections:
+          - prometheus.prometheus
+  roles:
+          - node_exporter        
