@@ -3,7 +3,6 @@
   become: true
   roles:
     #   - role: install_docker
-       - role: grafana_datasources 
        - role: grafana_docker
-       - role: grafana_dashboards
+      #  - role: grafana_dashboards
        

@@ -10,7 +10,7 @@
 
 - name: Create Grafana data directory for persistent data
   ansible.builtin.file:
-    path: /var/lib/grafana
+    path: "{{ grafana_persitent_data }}"
     state: directory
     owner: root
     group: root
@@ -18,12 +18,52 @@
 
 - name: Create Grafana data directory for datasources
   ansible.builtin.file:
-    path: /etc/grafana/datasources
+    path: "{{ dir_datasources }}"
     state: directory
     owner: root
     group: root
     mode: '0777'    
 
+- name: Create Grafana data directory for alerts
+  ansible.builtin.file:
+    path: "{{ dir_alerting }}"
+    state: directory
+    owner: root
+    group: root
+    mode: '0777'     
+
+- name: Copy datasources file
+  become: true
+  copy:
+    src: datasources.yaml
+    dest: "{{ dir_datasources }}/datasources.yaml" 
+    owner: root
+    group: root 
+    mode: '0777'
+
+- name: Find files in a directory
+  ansible.builtin.find:
+    paths: "{{ role_dir }}/files/alerts"        # Specify the directory to search
+    file_type: file               # Look for files (not directories)
+    recurse: yes                   
+    patterns: "alert*"            # Optional: Filter by file extension or pattern
+  delegate_to: localhost 
+  register: found_files
+
+- name: DEBUG files in directory
+  ansible.builtin.debug:
+   var: found_files.files
+
+- name: Copy alertconfig file found on previous step
+  become: true
+  copy:
+    src: "{{ item.path }}"
+    dest: "{{ dir_alerting }}" 
+    owner: root
+    group: root
+    mode: '0777'   
+  loop: "{{ found_files.files }}"
+     
 - name: Run Grafana Docker container
   community.docker.docker_container:
     name: grafana
@@ -33,8 +73,9 @@
     ports:
           - "3000:3000" # Map host port 3000 to container port 3000
     volumes:
-          - /var/lib/grafana:/var/lib/grafana                                 # Mount volume for persistent data
-          - /etc/grafana/datasources:/etc/grafana/provisioning/datasources
+          - "{{ grafana_persitent_data }}:/var/lib/grafana"                    # Mount volume for persistent data
+          - "{{ dir_datasources }}:/etc/grafana/provisioning/datasources"
+          - "{{ dir_alerting }}:/etc/grafana/provisioning/alerting"
     env:
           GF_SECURITY_ADMIN_USER: admin # Optional: Set admin username
           GF_SECURITY_ADMIN_PASSWORD: grafana # Optional: Set admin password

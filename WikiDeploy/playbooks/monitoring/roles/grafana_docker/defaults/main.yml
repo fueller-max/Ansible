@@ -1,3 +1,11 @@
 #SPDX-License-Identifier: MIT-0
 ---
 # defaults file for grafana_docker
+
+
+grafana_persitent_data: "/var/lib/grafana"
+dir_datasources:        "/etc/grafana/datasources"
+dir_alerting:           "/etc/grafana/alerting"
+
+
+role_dir:              "/home/ansible/PROJECTS/WikiDeploy/playbooks/monitoring/roles/grafana_docker/"

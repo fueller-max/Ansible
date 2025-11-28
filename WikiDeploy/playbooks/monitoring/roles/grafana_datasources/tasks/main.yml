@@ -6,7 +6,6 @@
   become: true
   copy:
     src: datasources.yaml
-   # dest: /etc/grafana/provisioning/datasources/datasources.yaml 
     dest: /etc/grafana/datasources/datasources.yaml 
     owner: root
     group: root 
